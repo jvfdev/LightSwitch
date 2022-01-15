@@ -1,6 +1,12 @@
-void setup() {
-  // put your setup code here, to run once:
+#include <Wire.h>
+#include <RTClib.h>
 
+RTC_DS3231 rtc;
+DateTime rtcTime;
+
+void setup() {
+  rtc.begin();
+  
 }
 
 void loop() {
