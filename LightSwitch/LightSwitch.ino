@@ -13,6 +13,7 @@ int t0;
 Servo myServo;
 int servoPin = 9;
 long servoTimer;
+int servoWaitTimems = 1000; // wait in ms before detaching servo (time to complete motion)
 
 RTC_DS3231 rtc;
 DateTime rtcTime;
@@ -73,7 +74,7 @@ void loop() {
   }
 
   if(myServo.attached()){
-    if(millis() - servoTimer > 1000){
+    if(millis() - servoTimer > servoWaitTimems){
       myServo.detach();
       Serial.println("detaching");
     }
