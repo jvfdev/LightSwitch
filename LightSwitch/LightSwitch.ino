@@ -27,7 +27,7 @@ LiquidCrystal lcd = LiquidCrystal(2,3,4,5,6,7);
 
 void setup() {
   rtc.begin();
-  rtc.adjust(DateTime(2022, 1, 15, 18, 25, 0));
+//  rtc.adjust(DateTime(2022, 1, 16, 11, 58, 0));
   pinMode(lightSwitchPin, INPUT_PULLUP);
   pinMode(LED_BUILTIN, OUTPUT);
   
@@ -78,5 +78,20 @@ void loop() {
   }
 
   detachServoTimer(1000);
+
+  //update display on LCD
+  rtcTime = rtc.now();
+  YYYY = rtcTime.year();
+  MM = rtcTime.month();
+  DD = rtcTime.day();
+  hh = rtcTime.hour();
+  mm = rtcTime.minute();
+  ss = rtcTime.second();
+
+//  char str[16];
+//  sprintf(str, "%04u-%02u-%02u %02u:%02u",  YYYY,MM,DD,hh,mm);
+//  lcd.home();
+//  lcd.print(str);
+updateTimeLCD();
   
 }
