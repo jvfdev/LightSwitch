@@ -11,7 +11,7 @@ bool buttonAlreadyPressed = true;
 int t0;
 
 Servo myServo;
-int servoPin = 9;
+const int servoPin = 9;
 long servoTimer;
 int servoWaitTimems = 1000; // wait in ms before detaching servo (time to complete motion)
 
@@ -55,10 +55,10 @@ void loop() {
         digitalWrite(LED_BUILTIN, light);
         
         if(light){
-          myServo.write(135);
+          servoOn();
         }
         else{
-          myServo.write(45);
+          servoOff();
         }
         buttonAlreadyPressed = true;
       }
