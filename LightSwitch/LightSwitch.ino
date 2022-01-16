@@ -1,8 +1,14 @@
 #include <Wire.h>
 #include <RTClib.h>
+#include <Servo.h>
 
+// light switch vars
 int lightSwitchPin = 7;
-bool lightSwitch = false;
+bool lightSwitchButton = false;
+bool lightSwitchPrevPress = false;
+bool light = false;
+bool buttonAlreadyPressed = true;
+int t0;
 
 RTC_DS3231 rtc;
 DateTime rtcTime;
@@ -14,17 +20,43 @@ int MM;
 int YYYY;
 int dayOfWeek;
 
+Servo myServo;
 
 
 void setup() {
   rtc.begin();
-  rtc.adjust(DateTime(2022,1,15,18,25,0));
+  rtc.adjust(DateTime(2022, 1, 15, 18, 25, 0));
   pinMode(lightSwitchPin, INPUT_PULLUP);
   pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  lightSwitch = digitalRead(lightSwitchPin);
-  digitalWrite(LED_BUILTIN, lightSwitch);
+  lightSwitchButton = !digitalRead(lightSwitchPin); // invert so that when button pressed, read as true
+  //  digitalWrite(LED_BUILTIN, lightSwitch);
+
+  if (lightSwitchButton) {
+    if (!lightSwitchPrevPress) {
+      // if not previously pressed, start the timer
+      t0 = millis();
+      
+    }
+    else if (millis() - t0 > 10) {
+      if(!buttonAlreadyPressed){
+        light = !light;
+        Serial.println("Flip!");
+        digitalWrite(LED_BUILTIN, light);
+        buttonAlreadyPressed = true;
+      }
+      
+    }
+
+    lightSwitchPrevPress = true;
+
+  }
+  else {
+    lightSwitchPrevPress = false;
+    buttonAlreadyPressed = false;
+  }
 }
