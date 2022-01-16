@@ -1,6 +1,6 @@
 #include <Wire.h>
 #include <RTClib.h>
-#include <Servo.h>
+//
 
 // light switch vars
 int lightSwitchPin = 7;
@@ -10,7 +10,7 @@ bool light = false;
 bool buttonAlreadyPressed = true;
 int t0;
 
-Servo myServo;
+
 const int servoPin = 9;
 long servoTimer;
 int servoWaitTimems = 1000; // wait in ms before detaching servo (time to complete motion)
@@ -48,8 +48,8 @@ void loop() {
     }
     else if (millis() - t0 > 10) {
       if(!buttonAlreadyPressed){
-        myServo.attach(servoPin);
-        servoTimer = millis();
+//        myServo.attach(servoPin);
+        
         light = !light;
         Serial.println("Flip!");
         digitalWrite(LED_BUILTIN, light);
@@ -73,11 +73,6 @@ void loop() {
     buttonAlreadyPressed = false;
   }
 
-  if(myServo.attached()){
-    if(millis() - servoTimer > servoWaitTimems){
-      myServo.detach();
-      Serial.println("detaching");
-    }
-  }
+  detachServoTimer(1000);
   
 }
