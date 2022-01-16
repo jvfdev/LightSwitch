@@ -10,6 +10,10 @@ bool light = false;
 bool buttonAlreadyPressed = true;
 int t0;
 
+Servo myServo;
+int servoPin = 9;
+long servoTimer;
+
 RTC_DS3231 rtc;
 DateTime rtcTime;
 int ss;
@@ -20,7 +24,6 @@ int MM;
 int YYYY;
 int dayOfWeek;
 
-Servo myServo;
 
 
 void setup() {
@@ -44,9 +47,18 @@ void loop() {
     }
     else if (millis() - t0 > 10) {
       if(!buttonAlreadyPressed){
+        myServo.attach(servoPin);
+        servoTimer = millis();
         light = !light;
         Serial.println("Flip!");
         digitalWrite(LED_BUILTIN, light);
+        
+        if(light){
+          myServo.write(135);
+        }
+        else{
+          myServo.write(45);
+        }
         buttonAlreadyPressed = true;
       }
       
@@ -59,4 +71,12 @@ void loop() {
     lightSwitchPrevPress = false;
     buttonAlreadyPressed = false;
   }
+
+  if(myServo.attached()){
+    if(millis() - servoTimer > 1000){
+      myServo.detach();
+      Serial.println("detaching");
+    }
+  }
+  
 }
