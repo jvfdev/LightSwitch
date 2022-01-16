@@ -1,19 +1,14 @@
 #include <Wire.h>
 #include <RTClib.h>
-//
 
-// light switch vars
-int lightSwitchPin = 7;
+
+// light switch button vars
+const int lightSwitchPin = 8;
 bool lightSwitchButton = false;
 bool lightSwitchPrevPress = false;
 bool light = false;
 bool buttonAlreadyPressed = true;
 int t0;
-
-
-const int servoPin = 9;
-long servoTimer;
-int servoWaitTimems = 1000; // wait in ms before detaching servo (time to complete motion)
 
 RTC_DS3231 rtc;
 DateTime rtcTime;
@@ -48,7 +43,6 @@ void loop() {
     }
     else if (millis() - t0 > 10) {
       if(!buttonAlreadyPressed){
-//        myServo.attach(servoPin);
         
         light = !light;
         Serial.println("Flip!");
