@@ -12,7 +12,13 @@ int t0;
 
 // alarm button vars
 const int alarmButtonPin = 10;
-bool alarmButtonState = false;
+const int LONG_PRESS_TIME  = 1000; // milliseconds
+
+// Variables will change:
+int lastState = LOW;  // the previous state from the input pin
+int currentState;     // the current reading from the input pin
+unsigned long pressedTime  = 0;
+unsigned long releasedTime = 0;
 
 // plus button vars
 const int plusButtonPin = 11;
@@ -50,6 +56,7 @@ void setup() {
   lcd.print("Alarm: Disabled");
 
   Serial.begin(9600);
+  Serial.println("Initialized");
 }
 
 void loop() {
@@ -101,9 +108,29 @@ void loop() {
   ss = rtcTime.second();
 
   updateTimeLCD();
-
+  CheckAlarmButtonPress();
 }
 
-void CheckAlarmButtonPress(){
-  //TODO: enable/disable alarm
+void CheckAlarmButtonPress() {
+  currentState = digitalRead(alarmButtonPin);
+  if (lastState == HIGH && currentState == LOW)       // button is pressed
+    pressedTime = millis();
+  else if (lastState == LOW && currentState == HIGH) { // button is released
+    releasedTime = millis();
+
+    long pressDuration = releasedTime - pressedTime;
+    if (pressDuration < 20) {
+      Serial.println("Bounce detected");
+    }
+    else if (pressDuration < LONG_PRESS_TIME) {
+      Serial.println("Short press detected");
+    }
+    else{
+      Serial.println("long press detected");
+    }
+  }
+
+  // save the the last state
+  lastState = currentState;
+
 }
