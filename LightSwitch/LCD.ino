@@ -5,3 +5,13 @@ void updateTimeLCD() {
   lcd.home();
   lcd.print(dateTimeString);
 }
+
+void updateAlarmDisplay(bool enabled){
+  lcd.setCursor(0,1);
+  if(enabled){
+    lcd.print("Alarm: Enabled ");
+  }
+  else{
+    lcd.print("Alarm: Disabled");
+  }
+}

@@ -13,8 +13,6 @@ int t0;
 // alarm button vars
 const int alarmButtonPin = 10;
 const int LONG_PRESS_TIME  = 1000; // milliseconds
-
-// Variables will change:
 int lastState = LOW;  // the previous state from the input pin
 int currentState;     // the current reading from the input pin
 unsigned long pressedTime  = 0;
@@ -25,6 +23,9 @@ const int plusButtonPin = 11;
 
 // minus button vars
 const int minusButtonPin = 12;
+
+//alarm vars
+bool alarmEnabled = false;
 
 
 RTC_DS3231 rtc;
@@ -109,6 +110,22 @@ void loop() {
 
   updateTimeLCD();
   CheckAlarmButtonPress();
+  updateAlarmDisplay(alarmEnabled);
+  triggerServo(22,15);
+}
+
+void triggerServo(int alarmHr, int alarmMin){
+  rtcTime = rtc.now();
+  int dayOfWeek = rtcTime.dayOfTheWeek();
+  DD = rtcTime.day();
+  hh = rtcTime.hour();
+  mm = rtcTime.minute();
+  bool isWeekday = ((dayOfWeek > 0) && (dayOfWeek < 7));
+  bool isAlarmTime = ((alarmHr == hh) && (alarmMin == mm));
+  if(isWeekday && isAlarmTime ){
+    servoOn();
+  }
+  
 }
 
 void CheckAlarmButtonPress() {
@@ -124,6 +141,7 @@ void CheckAlarmButtonPress() {
     }
     else if (pressDuration < LONG_PRESS_TIME) {
       Serial.println("Short press detected");
+      alarmEnabled = !alarmEnabled;
     }
     else{
       Serial.println("long press detected");
